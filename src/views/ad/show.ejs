@@ -8,7 +8,8 @@
 
     <main class="container">
       <h1><%= ad.title %></h1>
-        <form style="display:initial" action="/topics/<%= topic.id %>/destroy" method="post">
+        <a href="/ad/<%= ad.id %>/edit" class="btn btn-warning">Edit</a>
+        <form style="display:initial" action="/ad/<%= ad.id %>/destroy" method="post">
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>
       <p><%= ad.description %></p>

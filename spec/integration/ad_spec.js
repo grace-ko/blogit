@@ -93,5 +93,37 @@ describe("routes : ad", () => {
         });
       });
     });
+    describe("GET /ad/:id/edit", () => {
+      it("should render a view with an edit ad form", (done) => {
+        request.get(`${base}${this.ad.id}/edit`, (err, res, body) => {
+          expect(err).toBeNull();
+          expect(body).toContain("Edit Ad");
+          expect(body).toContain("JS Frameworks");
+          done();
+        });
+      });
+    });
+    describe("POST /ad/:id/update", () => {
+      it("should update the ad with the given values", (done) => {
+         const options = {
+            url: `${base}${this.ad.id}/update`,
+            form: {
+              title: "JavaScript Frameworks",
+              description: "There are a lot of them"
+            }
+          };
+          request.post(options,
+            (err, res, body) => {
+            expect(err).toBeNull();
+            Ad.findOne({
+              where: { id: this.ad.id }
+            })
+            .then((ad) => {
+              expect(ad.title).toBe("JavaScript Frameworks");
+              done();
+            });
+          });
+      });
+    });
   });
 });

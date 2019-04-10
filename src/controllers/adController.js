@@ -42,5 +42,23 @@ module.exports = {
         res.redirect(303, "/ad")
       }
     });
+  },
+  edit(req, res, next){
+    adQueries.getAd(req.params.id, (err, ad) => {
+      if(err || ad == null){
+        res.redirect(404, "/");
+      } else {
+        res.render("ad/edit", {ad});
+      }
+    });
+  },
+  update(req, res, next){
+    adQueries.updateAd(req.params.id, req.body, (err, ad) => {
+      if(err || ad == null){
+        res.redirect(404, `/ad/${req.params.id}/edit`);
+      } else {
+        res.redirect(`/ad/${ad.id}`);
+      }
+    });
   }
 }

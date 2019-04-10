@@ -41,5 +41,22 @@ module.exports = {
     .catch((err) => {
       callback(err);
     })
+  },
+  updateAd(id, updatedAd, callback){
+    return Ad.findByPk(id)
+    .then((ad) => {
+      if(!ad){
+        return callback("Ad not found");
+      }
+      ad.update(updatedAd, {
+        fields: Object.keys(updatedAd)
+      })
+      .then(() => {
+        callback(null, ad);
+      })
+      .catch((err) => {
+        callback(err);
+      });
+    });
   }
 }
