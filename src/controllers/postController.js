@@ -1,4 +1,5 @@
 const postQueries = require("../db/queries.posts.js");
+
 module.exports = {
   new(req, res, next){
     res.render("posts/new", {topicId: req.params.topicId});
@@ -17,6 +18,15 @@ module.exports = {
         res.redirect(303, `/topics/${newPost.topicId}/posts/${post.id}`);
       }
     });
+  },
+  getPost(id, callback){
+    return Post.findByPk(id)
+    .then((post) => {
+      callback(null, post);
+    })
+    .catch((err) => {
+      callback(err);
+    })
   },
   show(req, res, next){
     postQueries.getPost(req.params.id, (err, post) => {
@@ -37,21 +47,22 @@ module.exports = {
     });
   },
   edit(req, res, next){
-    postQueries.getPost(req.params.id, (err, post) => {
-      if(err || post == null){
-        res.redirect(404, "/");
-      } else {
-        res.render("posts/edit", {post});
-      }
-    });
-  },
+       postQueries.getPost(req.params.id, (err, post) => {
+         if(err || post == null){
+           res.redirect(404, "/");
+         } else {
+           res.render("posts/edit", {post});
+         }
+       });
+     },
   update(req, res, next){
-    postQueries.updatePost(req.params.id, req.body, (err, post) => {
-      if(err || post == null){
-        res.redirect(404, `/topics/${req.params.topicId}/posts/${req.params.id}/edit`);
-      } else {
-        res.redirect(`/topics/${req.params.topicId}/posts/${req.params.id}`);
-      }
-    });
-  }
+     postQueries.updatePost(req.params.id, req.body, (err, post) => {
+       if(err || post == null){
+         res.redirect(404, `/topics/${req.params.topicId}/posts/${req.params.id}/edit`);
+       } else {
+         res.redirect(`/topics/${req.params.topicId}/posts/${req.params.id}`);
+       }
+     });
+   }
+
 }

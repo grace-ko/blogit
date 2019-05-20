@@ -54,7 +54,7 @@ module.exports = {
         res.redirect(
         typeof err === "number" ? err : 500,
         `topics/${req.params.id}`
-      );
+        );
       } else {
         res.redirect(303, "/topics");
       }
