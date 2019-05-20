@@ -20,7 +20,7 @@ module.exports = {
     });
   },
   getPost(id, callback){
-    return Post.findByPk(id)
+    return Post.findById(id)
     .then((post) => {
       callback(null, post);
     })

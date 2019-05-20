@@ -126,13 +126,13 @@ describe("routes : topics", () => {
     });
     describe("POST /topics/:id/destroy", () => {
        it("should delete the topic with the associated ID", (done) => {
-         Topic.findAll()
+         Topic.all()
          .then((topics) => {
            const topicCountBeforeDelete = topics.length;
 
            expect(topicCountBeforeDelete).toBe(1);
            request.post(`${base}${this.topic.id}/destroy`, (err, res, body) => {
-             Topic.findAll()
+             Topic.all()
              .then((topics) => {
                expect(err).toBeNull();
                expect(topics.length).toBe(topicCountBeforeDelete - 1);
@@ -278,13 +278,13 @@ describe("routes : topics", () => {
     });
     describe("POST /topics/:id/destroy", () => {
        it("should delete the topic with the associated ID", (done) => {
-         Topic.findAll()
+         Topic.all()
          .then((topics) => {
            const topicCountBeforeDelete = topics.length;
 
            expect(topicCountBeforeDelete).toBe(1);
            request.post(`${base}${this.topic.id}/destroy`, (err, res, body) => {
-             Topic.findAll()
+             Topic.all()
              .then((topics) => {
                expect(err).toBeNull();
                expect(topics.length).toBe(topicCountBeforeDelete - 1);
