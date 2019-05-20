@@ -90,6 +90,15 @@ describe("Post", () => {
       })
     });
   });
+  describe("#getTopic()", () => {
+    it("should return the associated topic", (done) => {
+      this.post.getTopic()
+      .then((associatedTopic) => {
+        expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
+        done();
+      });
+    });
+  });
   describe("#setUser()", () => {
     it("should associate a post and a user together", (done) => {
       User.create({
@@ -111,15 +120,6 @@ describe("Post", () => {
       this.post.getUser()
       .then((associatedUser) => {
         expect(associatedUser.email).toBe("starman@tesla.com");
-        done();
-      });
-    });
-  });
-  describe("#getTopic()", () => {
-    it("should return the associated topic", (done) => {
-      this.post.getTopic()
-      .then((associatedTopic) => {
-        expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
         done();
       });
     });
