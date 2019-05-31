@@ -119,11 +119,32 @@ describe("routes : comments", () => {
     });
   });
   describe("signed in user performing CRUD actions for Comment", () => {
-    beforeEach((done) => {    // before each suite in this context
-      request.get({           // mock authentication
+    beforeEach((done) => {
+      this.anotherUser;
+      this.anotherUsersComment;
+
+      User.create({
+        email: "test@gmail.com",
+        password: "123456",
+        comments: [{
+          body: "this is my comment",
+          postId: this.post.id
+        }]
+      }, {
+        include: {
+          model: Comment,
+          as: "comments"
+        }
+      })
+      .then((anotherUser) => {
+        this.anotherUser = anotherUser;
+        this.anotherUsersComment = anotherUser.comments[0];
+      })
+
+      request.get({
         url: "http://localhost:3000/auth/fake",
         form: {
-          role: "member",     // mock authenticate as member user
+          role: "member",
           userId: this.user.id
         }
       },
@@ -159,14 +180,57 @@ describe("routes : comments", () => {
       });
     });
     describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
-
       it("should delete the comment with the associated ID", (done) => {
         Comment.all()
         .then((comments) => {
           const commentCountBeforeDelete = comments.length;
-
           expect(commentCountBeforeDelete).toBe(1);
-
+          request.post(
+           `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+            (err, res, body) => {
+            expect(res.statusCode).toBe(302);
+            Comment.all()
+            .then((comments) => {
+              expect(err).toBeNull();
+              expect(comments.length).toBe(commentCountBeforeDelete - 1);
+              done();
+            })
+          });
+        })
+      });
+      it("should not delete the comment of another member", (done) => {
+        Comment.all()
+        .then((comments) => {
+          const commentCountBeforeDelete = comments.length;
+          expect(commentCountBeforeDelete).toBe(1);
+          request.post(
+           `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.anotherUsersComment.id}/destroy`,
+            (err, res, body) => {
+            expect(res.statusCode).toBe(302);
+            Comment.all()
+            .then((comments) => {
+              expect(err).toBeNull();
+              expect(comments.length).toBe(commentCountBeforeDelete);
+              done();
+            })
+          });
+        })
+      });
+      it("should delete the comment of members by admin", (done) => {
+        request.get({
+          url: "http://localhost:3000/auth/fake",
+          form: {
+             role: "admin",
+             userId: this.user.id
+          }
+        }, (err, res, body) => {
+            done();
+          }
+        );
+        Comment.all()
+        .then((comments) => {
+          const commentCountBeforeDelete = comments.length;
+          expect(commentCountBeforeDelete).toBe(1);
           request.post(
            `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
             (err, res, body) => {
@@ -181,5 +245,5 @@ describe("routes : comments", () => {
         })
       });
     });
-  }); //end context for signed in user
+  });
 });
