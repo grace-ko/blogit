@@ -2,12 +2,14 @@ const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const User = require("../../src/db/models").User;
+const Vote = require("../../src/db/models").Vote;
 
 describe("Post", () => {
   beforeEach((done) => {
     this.topic;
     this.post;
     this.user;
+    this.vote;
 
     sequelize.sync({force: true}).then((res) => {
 
@@ -160,7 +162,7 @@ describe("Post", () => {
         }]
       })
       .then((post) => {
-        expect(post.hasUpvoteFor(this.user.id)).toBeFalsy();
+        expect(post.hasUpvoteFor(this.user.id)).toBeTruthy();
         Vote.create({
           value: 1,
           userId: this.user.id,
